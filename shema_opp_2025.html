@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Структурно-логічна схема</title>
+<style>
+  body { margin: 0; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f5f7; }
+  h1 { text-align: center; font-size: 21px; color: #2b2b2b; margin: 0 0 16px; }
+  #wrap { max-width: 1500px; margin: 0 auto; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  svg { width: 100%; height: auto; display: block; }
+  .node { cursor: pointer; transition: opacity .25s; }
+  .node-rect { transition: stroke-width .2s, filter .2s; }
+  .node.dim { opacity: 0.28; }
+  .node.active .node-rect { stroke-width: 3.4; filter: drop-shadow(0 0 3px rgba(0,0,0,0.25)); }
+  .node.source-active .node-rect { stroke: #2563a8; stroke-width: 3; }
+  .node.target-active .node-rect { stroke: #d9761a; stroke-width: 3; }
+  .edge { transition: opacity .2s, stroke .15s, stroke-width .15s; }
+  .edge.dim { opacity: 0.07; }
+  .trunk { transition: opacity .2s, stroke-width .15s; }
+  .trunk.dim { opacity: 0.07; }
+  .trunk.hot { stroke-width: 3.6; opacity: 1; }
+  .junction { transition: opacity .2s; }
+  .junction.dim { opacity: 0.07; }
+  .edge.in-active { stroke: #2563a8 !important; stroke-width: 2.6; opacity: 1; marker-end: url(#arrow-in); }
+  .edge.out-active { stroke: #d9761a !important; stroke-width: 2.6; opacity: 1; marker-end: url(#arrow-out); }
+  .edge.trace { stroke: #111 !important; stroke-width: 3; opacity: 1; marker-end: url(#arrow-trace); }
+  .edge-hit { cursor: crosshair; }
+  #tooltip {
+    position: fixed; pointer-events: none; z-index: 50; display: none;
+    background: rgba(25,25,25,0.94); color: #fff; font-size: 12.5px; line-height: 1.45;
+    padding: 7px 11px; border-radius: 7px; max-width: 340px; box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+  }
+  #tooltip .arrow-glyph { color: #ffb761; font-weight: 700; }
+  #reset-btn { display: block; margin: 14px auto 0; padding: 8px 18px; border-radius: 20px; border: 1px solid #ccc; background: #fafafa; color: #444; font-size: 13px; cursor: pointer; }
+  #reset-btn:hover { background: #eee; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Структурно-логічна схема освітньо-професійної програми «Професійна освіта. Цифрові технології»</h1>
+  <svg id="scheme-svg" viewBox="0 0 1490 1437" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="arrow-gen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c96b6b"/></marker>
+<marker id="arrow-pp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4d7fb0"/></marker>
+<marker id="arrow-math" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f7ca3"/></marker>
+<marker id="arrow-it" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c9761f"/></marker>
+<marker id="arrow-prac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3d8a5e"/></marker>
+<marker id="arrow-elect" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5aa87e"/></marker>
+<marker id="arrow-att" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c14a24"/></marker>
+<marker id="arrow-in" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563a8"/></marker>
+<marker id="arrow-out" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d9761a"/></marker>
+<marker id="arrow-trace" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#111"/></marker>
+</defs>
+<rect x="0" y="0" width="1490" height="1437" fill="#ffffff"/>
+<rect x="30" y="12" width="630" height="32" rx="6" fill="#9a9a9a"/>
+<text x="345.0" y="33" text-anchor="middle" font-size="16" font-weight="700" fill="white">I курс</text>
+<rect x="770" y="12" width="630" height="32" rx="6" fill="#9a9a9a"/>
+<text x="1085.0" y="33" text-anchor="middle" font-size="16" font-weight="700" fill="white">II курс</text>
+<rect x="30" y="54" width="260" height="32" rx="6" fill="#6b6b6b"/>
+<text x="160.0" y="75" text-anchor="middle" font-size="14" font-weight="700" fill="white">1 семестр</text>
+<rect x="400" y="54" width="260" height="32" rx="6" fill="#6b6b6b"/>
+<text x="530.0" y="75" text-anchor="middle" font-size="14" font-weight="700" fill="white">2 семестр</text>
+<rect x="770" y="54" width="260" height="32" rx="6" fill="#6b6b6b"/>
+<text x="900.0" y="75" text-anchor="middle" font-size="14" font-weight="700" fill="white">3 семестр</text>
+<rect x="1140" y="54" width="260" height="32" rx="6" fill="#6b6b6b"/>
+<text x="1270.0" y="75" text-anchor="middle" font-size="14" font-weight="700" fill="white">4 семестр</text>
+<g id="edges-layer">
+<path class="trunk" data-owner="ist_kult" d="M 290.0,179.0 L 309.0,179.0 L 309.0,219.8 L 680.6,219.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="sociologia" d="M 290.0,627.0 L 350.1,627.0 L 350.1,667.8 L 749.4,667.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ist_ukr" d="M 660.0,179.0 L 679.0,179.0 L 679.0,235.0 L 1050.6,235.0" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="pedagogika" d="M 660.0,403.0 L 697.0,403.0 L 697.0,459.0 L 1119.4,459.0" fill="none" stroke="#4d7fb0" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="filosofia" d="M 1030.0,179.0 L 1049.0,179.0 L 1049.0,219.8 L 1085.0,219.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="omvr" d="M 1030.0,291.0 L 1061.0,291.0 L 1061.0,347.0 L 1096.5,347.0" fill="none" stroke="#4d7fb0" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ukr_mova" d="M 1400.0,179.0 L 1414.0,179.0 L 1414.0,219.8 L 1414.0,219.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="inoz_mova" d="M 290.0,291.0 L 319.3,291.0 L 319.3,331.8 L 319.3,331.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="fizyka" d="M 290.0,963.0 L 381.0,963.0 L 381.0,1003.8 L 1119.4,1003.8" fill="none" stroke="#3f7ca3" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="bzhd" d="M 1400.0,291.0 L 1420.4,291.0 L 1420.4,331.8 L 1420.4,331.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="pravoznavstvo" d="M 290.0,403.0 L 329.6,403.0 L 329.6,443.8 L 680.6,443.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ekon_teor" d="M 290.0,515.0 L 339.9,515.0 L 339.9,555.8 L 1085.0,555.8" fill="none" stroke="#c96b6b" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ekologia" d="M 660.0,291.0 L 688.0,291.0 L 688.0,331.8 L 1050.6,331.8" fill="none" stroke="#3f7ca3" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="psyhologia" d="M 290.0,739.0 L 360.4,739.0 L 360.4,779.8 L 1085.0,779.8" fill="none" stroke="#4d7fb0" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ompn" d="M 1400.0,1075.0 L 1439.6,1075.0 L 1439.6,1115.8 L 1439.6,1115.8" fill="none" stroke="#4d7fb0" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyshcha_mat" d="M 660.0,515.0 L 706.0,515.0 L 706.0,571.0 L 1119.4,571.0" fill="none" stroke="#3f7ca3" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ikt" d="M 1030.0,403.0 L 1073.0,403.0 L 1073.0,443.8 L 1073.0,443.8" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="tzn" d="M 1030.0,515.0 L 1085.0,515.0 L 1085.0,586.2 L 1119.4,586.2" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="os" d="M 290.0,851.0 L 370.7,851.0 L 370.7,891.8 L 1096.5,891.8" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="oct" d="M 660.0,627.0 L 715.0,627.0 L 715.0,683.0 L 715.0,683.0" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ikg" d="M 660.0,739.0 L 724.0,739.0 L 724.0,795.0 L 724.0,795.0" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyr_prakt" d="M 660.0,963.0 L 742.0,963.0 L 742.0,1019.0 L 1119.4,1019.0" fill="none" stroke="#3d8a5e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="teh_prakt" d="M 1030.0,851.0 L 1121.0,851.0 L 1121.0,922.2 L 1121.0,922.2" fill="none" stroke="#3d8a5e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ped_prakt2" d="M 660.0,1187.0 L 751.0,1187.0 L 751.0,1227.8 L 1119.4,1227.8" fill="none" stroke="#3d8a5e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyb_a" d="M 660.0,851.0 L 733.0,851.0 L 733.0,907.0 L 1109.6,907.0" fill="none" stroke="#5aa87e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyb_b" d="M 1030.0,627.0 L 1097.0,627.0 L 1097.0,667.8 L 1097.0,667.8" fill="none" stroke="#5aa87e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyb_c" d="M 1030.0,739.0 L 1109.0,739.0 L 1109.0,795.0 L 1109.0,795.0" fill="none" stroke="#5aa87e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="vyb_d" d="M 1400.0,739.0 L 1433.2,739.0 L 1433.2,779.8 L 1433.2,779.8" fill="none" stroke="#5aa87e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ksm" d="M 1400.0,515.0 L 1426.8,515.0 L 1426.8,555.8 L 1426.8,555.8" fill="none" stroke="#c9761f" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path class="trunk" data-owner="ped_prakt4" d="M 1400.0,1187.0 L 1446.0,1187.0 L 1446.0,1227.8 L 1446.0,1227.8" fill="none" stroke="#3d8a5e" stroke-width="2.6" opacity="0.85" stroke-linejoin="miter" stroke-linecap="round"/>
+<path id="edge-0" class="edge" data-source="ist_kult" data-target="ist_ukr" d="M 290.0,163.8 L 309.0,163.8 L 309.0,219.8 L 310.6,219.8 L 310.6,163.8 L 400.0,163.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="0" data-source="ist_kult" data-target="ist_ukr" data-src-label="Історія української культури" data-tgt-label="Історія України" d="M 290.0,163.8 L 309.0,163.8 L 309.0,219.8 L 310.6,219.8 L 310.6,163.8 L 400.0,163.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-1" class="edge" data-source="ist_kult" data-target="pedagogika" d="M 290.0,194.2 L 309.0,194.2 L 309.0,219.8 L 310.6,219.8 L 310.6,387.8 L 400.0,387.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="1" data-source="ist_kult" data-target="pedagogika" data-src-label="Історія української культури" data-tgt-label="Педагогіка" d="M 290.0,194.2 L 309.0,194.2 L 309.0,219.8 L 310.6,219.8 L 310.6,387.8 L 400.0,387.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-2" class="edge" data-source="ist_kult" data-target="filosofia" d="M 290.0,179.0 L 309.0,179.0 L 309.0,219.8 L 680.6,219.8 L 680.6,163.8 L 770.0,163.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="2" data-source="ist_kult" data-target="filosofia" data-src-label="Історія української культури" data-tgt-label="Філософія" d="M 290.0,179.0 L 309.0,179.0 L 309.0,219.8 L 680.6,219.8 L 680.6,163.8 L 770.0,163.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-3" class="edge" data-source="sociologia" data-target="ist_ukr" d="M 290.0,611.8 L 350.1,611.8 L 350.1,667.8 L 379.4,667.8 L 379.4,194.2 L 400.0,194.2" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="3" data-source="sociologia" data-target="ist_ukr" data-src-label="Соціологія" data-tgt-label="Історія України" d="M 290.0,611.8 L 350.1,611.8 L 350.1,667.8 L 379.4,667.8 L 379.4,194.2 L 400.0,194.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-4" class="edge" data-source="sociologia" data-target="filosofia" d="M 290.0,627.0 L 350.1,627.0 L 350.1,667.8 L 749.4,667.8 L 749.4,194.2 L 770.0,194.2" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="4" data-source="sociologia" data-target="filosofia" data-src-label="Соціологія" data-tgt-label="Філософія" d="M 290.0,627.0 L 350.1,627.0 L 350.1,667.8 L 749.4,667.8 L 749.4,194.2 L 770.0,194.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-5" class="edge" data-source="sociologia" data-target="pedagogika" d="M 290.0,642.2 L 350.1,642.2 L 350.1,667.8 L 345.0,667.8 L 345.0,403.0 L 400.0,403.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="5" data-source="sociologia" data-target="pedagogika" data-src-label="Соціологія" data-tgt-label="Педагогіка" d="M 290.0,642.2 L 350.1,642.2 L 350.1,667.8 L 345.0,667.8 L 345.0,403.0 L 400.0,403.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-6" class="edge" data-source="ist_ukr" data-target="filosofia" d="M 660.0,163.8 L 679.0,163.8 L 679.0,235.0 L 703.5,235.0 L 703.5,173.9 L 770.0,173.9" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="6" data-source="ist_ukr" data-target="filosofia" data-src-label="Історія України" data-tgt-label="Філософія" d="M 660.0,163.8 L 679.0,163.8 L 679.0,235.0 L 703.5,235.0 L 703.5,173.9 L 770.0,173.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-7" class="edge" data-source="ist_ukr" data-target="ukr_mova" d="M 660.0,194.2 L 679.0,194.2 L 679.0,235.0 L 1050.6,235.0 L 1050.6,163.8 L 1140.0,163.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="7" data-source="ist_ukr" data-target="ukr_mova" data-src-label="Історія України" data-tgt-label="Українська мова (за професійним спрямуванням)" d="M 660.0,194.2 L 679.0,194.2 L 679.0,235.0 L 1050.6,235.0 L 1050.6,163.8 L 1140.0,163.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-8" class="edge" data-source="pedagogika" data-target="filosofia" d="M 660.0,387.8 L 697.0,387.8 L 697.0,459.0 L 726.5,459.0 L 726.5,184.1 L 770.0,184.1" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="8" data-source="pedagogika" data-target="filosofia" data-src-label="Педагогіка" data-tgt-label="Філософія" d="M 660.0,387.8 L 697.0,387.8 L 697.0,459.0 L 726.5,459.0 L 726.5,184.1 L 770.0,184.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-9" class="edge" data-source="filosofia" data-target="ukr_mova" d="M 1030.0,163.8 L 1049.0,163.8 L 1049.0,219.8 L 1073.5,219.8 L 1073.5,173.9 L 1140.0,173.9" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="9" data-source="filosofia" data-target="ukr_mova" data-src-label="Філософія" data-tgt-label="Українська мова (за професійним спрямуванням)" d="M 1030.0,163.8 L 1049.0,163.8 L 1049.0,219.8 L 1073.5,219.8 L 1073.5,173.9 L 1140.0,173.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-10" class="edge" data-source="filosofia" data-target="vyb_d" d="M 1030.0,194.2 L 1049.0,194.2 L 1049.0,219.8 L 1085.0,219.8 L 1085.0,739.0 L 1140.0,739.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="10" data-source="filosofia" data-target="vyb_d" data-src-label="Філософія" data-tgt-label="Вибіркова дисципліна" d="M 1030.0,194.2 L 1049.0,194.2 L 1049.0,219.8 L 1085.0,219.8 L 1085.0,739.0 L 1140.0,739.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-11" class="edge" data-source="pedagogika" data-target="ukr_mova" d="M 660.0,393.9 L 697.0,393.9 L 697.0,459.0 L 1119.4,459.0 L 1119.4,194.2 L 1140.0,194.2" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="11" data-source="pedagogika" data-target="ukr_mova" data-src-label="Педагогіка" data-tgt-label="Українська мова (за професійним спрямуванням)" d="M 660.0,393.9 L 697.0,393.9 L 697.0,459.0 L 1119.4,459.0 L 1119.4,194.2 L 1140.0,194.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-12" class="edge" data-source="omvr" data-target="ukr_mova" d="M 1030.0,275.8 L 1061.0,275.8 L 1061.0,347.0 L 1096.5,347.0 L 1096.5,184.1 L 1140.0,184.1" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="12" data-source="omvr" data-target="ukr_mova" data-src-label="Організація та методика виховної роботи" data-tgt-label="Українська мова (за професійним спрямуванням)" d="M 1030.0,275.8 L 1061.0,275.8 L 1061.0,347.0 L 1096.5,347.0 L 1096.5,184.1 L 1140.0,184.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-13" class="edge" data-source="ukr_mova" data-target="ped_prakt4" d="M 1400.0,179.0 L 1414.0,179.0 L 1414.0,219.8 L 1240.1,219.8 L 1240.1,1158.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="13" data-source="ukr_mova" data-target="ped_prakt4" data-src-label="Українська мова (за професійним спрямуванням)" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1400.0,179.0 L 1414.0,179.0 L 1414.0,219.8 L 1240.1,219.8 L 1240.1,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-14" class="edge" data-source="inoz_mova" data-target="oct" d="M 290.0,285.9 L 319.3,285.9 L 319.3,331.8 L 310.6,331.8 L 310.6,611.8 L 400.0,611.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="14" data-source="inoz_mova" data-target="oct" data-src-label="Іноземна мова (за професійним спрямуванням)" data-tgt-label="Основи цифрових технологій" d="M 290.0,285.9 L 319.3,285.9 L 319.3,331.8 L 310.6,331.8 L 310.6,611.8 L 400.0,611.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-15" class="edge" data-source="inoz_mova" data-target="ikg" d="M 290.0,296.1 L 319.3,296.1 L 319.3,331.8 L 310.6,331.8 L 310.6,723.8 L 400.0,723.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="15" data-source="inoz_mova" data-target="ikg" data-src-label="Іноземна мова (за професійним спрямуванням)" data-tgt-label="Інженерна та комп'ютерна графіка" d="M 290.0,296.1 L 319.3,296.1 L 319.3,331.8 L 310.6,331.8 L 310.6,723.8 L 400.0,723.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-16" class="edge" data-source="inoz_mova" data-target="vyr_prakt" d="M 290.0,306.2 L 319.3,306.2 L 319.3,331.8 L 310.6,331.8 L 310.6,947.8 L 400.0,947.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="16" data-source="inoz_mova" data-target="vyr_prakt" data-src-label="Іноземна мова (за професійним спрямуванням)" data-tgt-label="Виробнича практика" d="M 290.0,306.2 L 319.3,306.2 L 319.3,331.8 L 310.6,331.8 L 310.6,947.8 L 400.0,947.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-17" class="edge" data-source="inoz_mova" data-target="ekologia" d="M 290.0,275.8 L 319.3,275.8 L 319.3,331.8 L 310.6,331.8 L 310.6,275.8 L 400.0,275.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="17" data-source="inoz_mova" data-target="ekologia" data-src-label="Іноземна мова (за професійним спрямуванням)" data-tgt-label="Екологія" d="M 290.0,275.8 L 319.3,275.8 L 319.3,331.8 L 310.6,331.8 L 310.6,275.8 L 400.0,275.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-18" class="edge" data-source="fizyka" data-target="bzhd" d="M 290.0,947.8 L 381.0,947.8 L 381.0,1003.8 L 1119.4,1003.8 L 1119.4,306.2 L 1140.0,306.2" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="18" data-source="fizyka" data-target="bzhd" data-src-label="Фізика. Електротехніка" data-tgt-label="Безпека життєдіяльності (основи охорони праці)" d="M 290.0,947.8 L 381.0,947.8 L 381.0,1003.8 L 1119.4,1003.8 L 1119.4,306.2 L 1140.0,306.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-19" class="edge" data-source="omvr" data-target="bzhd" d="M 1030.0,283.4 L 1061.0,283.4 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,275.8 L 1140.0,275.8" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="19" data-source="omvr" data-target="bzhd" data-src-label="Організація та методика виховної роботи" data-tgt-label="Безпека життєдіяльності (основи охорони праці)" d="M 1030.0,283.4 L 1061.0,283.4 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,275.8 L 1140.0,275.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-20" class="edge" data-source="bzhd" data-target="ped_prakt4" d="M 1400.0,291.0 L 1420.4,291.0 L 1420.4,331.8 L 1299.9,331.8 L 1299.9,1158.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="20" data-source="bzhd" data-target="ped_prakt4" data-src-label="Безпека життєдіяльності (основи охорони праці)" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1400.0,291.0 L 1420.4,291.0 L 1420.4,331.8 L 1299.9,331.8 L 1299.9,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-21" class="edge" data-source="pravoznavstvo" data-target="vyr_prakt" d="M 290.0,403.0 L 329.6,403.0 L 329.6,443.8 L 345.0,443.8 L 345.0,963.0 L 400.0,963.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="21" data-source="pravoznavstvo" data-target="vyr_prakt" data-src-label="Основи правознавства" data-tgt-label="Виробнича практика" d="M 290.0,403.0 L 329.6,403.0 L 329.6,443.8 L 345.0,443.8 L 345.0,963.0 L 400.0,963.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-22" class="edge" data-source="pravoznavstvo" data-target="teh_prakt" d="M 290.0,387.8 L 329.6,387.8 L 329.6,443.8 L 680.6,443.8 L 680.6,835.8 L 770.0,835.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="22" data-source="pravoznavstvo" data-target="teh_prakt" data-src-label="Основи правознавства" data-tgt-label="Технологічна практика" d="M 290.0,387.8 L 329.6,387.8 L 329.6,443.8 L 680.6,443.8 L 680.6,835.8 L 770.0,835.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-23" class="edge" data-source="pravoznavstvo" data-target="ped_prakt2" d="M 290.0,418.2 L 329.6,418.2 L 329.6,443.8 L 310.6,443.8 L 310.6,1171.8 L 400.0,1171.8" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="23" data-source="pravoznavstvo" data-target="ped_prakt2" data-src-label="Основи правознавства" data-tgt-label="Педагогічна практика (2 семестр)" d="M 290.0,418.2 L 329.6,418.2 L 329.6,443.8 L 310.6,443.8 L 310.6,1171.8 L 400.0,1171.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-24" class="edge" data-source="ekon_teor" data-target="ekologia" d="M 290.0,499.8 L 339.9,499.8 L 339.9,555.8 L 379.4,555.8 L 379.4,306.2 L 400.0,306.2" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="24" data-source="ekon_teor" data-target="ekologia" data-src-label="Економічна теорія" data-tgt-label="Екологія" d="M 290.0,499.8 L 339.9,499.8 L 339.9,555.8 L 379.4,555.8 L 379.4,306.2 L 400.0,306.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-25" class="edge" data-source="ekon_teor" data-target="vyshcha_mat" d="M 290.0,530.2 L 339.9,530.2 L 339.9,555.8 L 345.0,555.8 L 345.0,515.0 L 400.0,515.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="25" data-source="ekon_teor" data-target="vyshcha_mat" data-src-label="Економічна теорія" data-tgt-label="Вища математика" d="M 290.0,530.2 L 339.9,530.2 L 339.9,555.8 L 345.0,555.8 L 345.0,515.0 L 400.0,515.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-26" class="edge" data-source="ekon_teor" data-target="eov" d="M 290.0,515.0 L 339.9,515.0 L 339.9,555.8 L 1085.0,555.8 L 1085.0,403.0 L 1140.0,403.0" fill="none" stroke="#c96b6b" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-gen)"/>
+<path class="edge-hit" data-edge="26" data-source="ekon_teor" data-target="eov" data-src-label="Економічна теорія" data-tgt-label="Економіка і організація виробництва" d="M 290.0,515.0 L 339.9,515.0 L 339.9,555.8 L 1085.0,555.8 L 1085.0,403.0 L 1140.0,403.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-27" class="edge" data-source="ekologia" data-target="omvr" d="M 660.0,275.8 L 688.0,275.8 L 688.0,331.8 L 680.6,331.8 L 680.6,275.8 L 770.0,275.8" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="27" data-source="ekologia" data-target="omvr" data-src-label="Екологія" data-tgt-label="Організація та методика виховної роботи" d="M 660.0,275.8 L 688.0,275.8 L 688.0,331.8 L 680.6,331.8 L 680.6,275.8 L 770.0,275.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-28" class="edge" data-source="ekologia" data-target="eov" d="M 660.0,306.2 L 688.0,306.2 L 688.0,331.8 L 1050.6,331.8 L 1050.6,387.8 L 1140.0,387.8" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="28" data-source="ekologia" data-target="eov" data-src-label="Екологія" data-tgt-label="Економіка і організація виробництва" d="M 660.0,306.2 L 688.0,306.2 L 688.0,331.8 L 1050.6,331.8 L 1050.6,387.8 L 1140.0,387.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-29" class="edge" data-source="psyhologia" data-target="pedagogika" d="M 290.0,731.4 L 360.4,731.4 L 360.4,779.8 L 379.4,779.8 L 379.4,418.2 L 400.0,418.2" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="29" data-source="psyhologia" data-target="pedagogika" data-src-label="Психологія" data-tgt-label="Педагогіка" d="M 290.0,731.4 L 360.4,731.4 L 360.4,779.8 L 379.4,779.8 L 379.4,418.2 L 400.0,418.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-30" class="edge" data-source="psyhologia" data-target="omvr" d="M 290.0,723.8 L 360.4,723.8 L 360.4,779.8 L 749.4,779.8 L 749.4,306.2 L 770.0,306.2" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="30" data-source="psyhologia" data-target="omvr" data-src-label="Психологія" data-tgt-label="Організація та методика виховної роботи" d="M 290.0,723.8 L 360.4,723.8 L 360.4,779.8 L 749.4,779.8 L 749.4,306.2 L 770.0,306.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-31" class="edge" data-source="psyhologia" data-target="ompn" d="M 290.0,739.0 L 360.4,739.0 L 360.4,779.8 L 749.4,779.8 L 749.4,1090.2 L 770.0,1090.2" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="31" data-source="psyhologia" data-target="ompn" data-src-label="Психологія" data-tgt-label="Організація та методика професійного навчання" d="M 290.0,739.0 L 360.4,739.0 L 360.4,779.8 L 749.4,779.8 L 749.4,1090.2 L 770.0,1090.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-32" class="edge" data-source="psyhologia" data-target="ped_prakt2" d="M 290.0,746.6 L 360.4,746.6 L 360.4,779.8 L 379.4,779.8 L 379.4,1202.2 L 400.0,1202.2" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="32" data-source="psyhologia" data-target="ped_prakt2" data-src-label="Психологія" data-tgt-label="Педагогічна практика (2 семестр)" d="M 290.0,746.6 L 360.4,746.6 L 360.4,779.8 L 379.4,779.8 L 379.4,1202.2 L 400.0,1202.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-33" class="edge" data-source="pedagogika" data-target="omvr" d="M 660.0,400.0 L 697.0,400.0 L 697.0,459.0 L 715.0,459.0 L 715.0,291.0 L 770.0,291.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="33" data-source="pedagogika" data-target="omvr" data-src-label="Педагогіка" data-tgt-label="Організація та методика виховної роботи" d="M 660.0,400.0 L 697.0,400.0 L 697.0,459.0 L 715.0,459.0 L 715.0,291.0 L 770.0,291.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-34" class="edge" data-source="pedagogika" data-target="ompn" d="M 660.0,406.0 L 697.0,406.0 L 697.0,459.0 L 680.6,459.0 L 680.6,1059.8 L 770.0,1059.8" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="34" data-source="pedagogika" data-target="ompn" data-src-label="Педагогіка" data-tgt-label="Організація та методика професійного навчання" d="M 660.0,406.0 L 697.0,406.0 L 697.0,459.0 L 680.6,459.0 L 680.6,1059.8 L 770.0,1059.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-35" class="edge" data-source="pedagogika" data-target="ped_prakt2" d="M 660.0,412.1 L 697.0,412.1 L 697.0,459.0 L 440.4,459.0 L 440.4,1158.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="35" data-source="pedagogika" data-target="ped_prakt2" data-src-label="Педагогіка" data-tgt-label="Педагогічна практика (2 семестр)" d="M 660.0,412.1 L 697.0,412.1 L 697.0,459.0 L 440.4,459.0 L 440.4,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-36" class="edge" data-source="omvr" data-target="ompn" d="M 1030.0,291.0 L 1061.0,291.0 L 1061.0,347.0 L 1085.0,347.0 L 1085.0,1046.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="36" data-source="omvr" data-target="ompn" data-src-label="Організація та методика виховної роботи" data-tgt-label="Організація та методика професійного навчання" d="M 1030.0,291.0 L 1061.0,291.0 L 1061.0,347.0 L 1085.0,347.0 L 1085.0,1046.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-37" class="edge" data-source="omvr" data-target="ped_prakt4" d="M 1030.0,298.6 L 1061.0,298.6 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,1171.8 L 1140.0,1171.8" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="37" data-source="omvr" data-target="ped_prakt4" data-src-label="Організація та методика виховної роботи" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,298.6 L 1061.0,298.6 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,1171.8 L 1140.0,1171.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-38" class="edge" data-source="ompn" data-target="ped_prakt4" d="M 1400.0,1059.8 L 1439.6,1059.8 L 1439.6,1115.8 L 1180.4,1115.8 L 1180.4,1158.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="38" data-source="ompn" data-target="ped_prakt4" data-src-label="Організація та методика професійного навчання" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1400.0,1059.8 L 1439.6,1059.8 L 1439.6,1115.8 L 1180.4,1115.8 L 1180.4,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-39" class="edge" data-source="vyshcha_mat" data-target="eov" d="M 660.0,499.8 L 706.0,499.8 L 706.0,571.0 L 1119.4,571.0 L 1119.4,418.2 L 1140.0,418.2" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="39" data-source="vyshcha_mat" data-target="eov" data-src-label="Вища математика" data-tgt-label="Економіка і організація виробництва" d="M 660.0,499.8 L 706.0,499.8 L 706.0,571.0 L 1119.4,571.0 L 1119.4,418.2 L 1140.0,418.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-40" class="edge" data-source="ikt" data-target="ksm" d="M 1030.0,387.8 L 1073.0,387.8 L 1073.0,443.8 L 1050.6,443.8 L 1050.6,499.8 L 1140.0,499.8" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="40" data-source="ikt" data-target="ksm" data-src-label="Інформатика та комп'ютерна техніка" data-tgt-label="Комп'ютерні системи та мережі" d="M 1030.0,387.8 L 1073.0,387.8 L 1073.0,443.8 L 1050.6,443.8 L 1050.6,499.8 L 1140.0,499.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-41" class="edge" data-source="tzn" data-target="ksm" d="M 1030.0,499.8 L 1085.0,499.8 L 1085.0,586.2 L 1119.4,586.2 L 1119.4,530.2 L 1140.0,530.2" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="41" data-source="tzn" data-target="ksm" data-src-label="Технічні засоби навчання та методика їх використання" data-tgt-label="Комп'ютерні системи та мережі" d="M 1030.0,499.8 L 1085.0,499.8 L 1085.0,586.2 L 1119.4,586.2 L 1119.4,530.2 L 1140.0,530.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-42" class="edge" data-source="vyshcha_mat" data-target="programuvannya" d="M 660.0,520.1 L 706.0,520.1 L 706.0,571.0 L 1119.4,571.0 L 1119.4,642.2 L 1140.0,642.2" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="42" data-source="vyshcha_mat" data-target="programuvannya" data-src-label="Вища математика" data-tgt-label="Програмування" d="M 660.0,520.1 L 706.0,520.1 L 706.0,571.0 L 1119.4,571.0 L 1119.4,642.2 L 1140.0,642.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-43" class="edge" data-source="ikt" data-target="programuvannya" d="M 1030.0,397.9 L 1073.0,397.9 L 1073.0,443.8 L 1050.6,443.8 L 1050.6,611.8 L 1140.0,611.8" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="43" data-source="ikt" data-target="programuvannya" data-src-label="Інформатика та комп'ютерна техніка" data-tgt-label="Програмування" d="M 1030.0,397.9 L 1073.0,397.9 L 1073.0,443.8 L 1050.6,443.8 L 1050.6,611.8 L 1140.0,611.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-44" class="edge" data-source="os" data-target="ikt" d="M 290.0,835.8 L 370.7,835.8 L 370.7,891.8 L 726.5,891.8 L 726.5,408.1 L 770.0,408.1" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="44" data-source="os" data-target="ikt" data-src-label="Операційні системи" data-tgt-label="Інформатика та комп'ютерна техніка" d="M 290.0,835.8 L 370.7,835.8 L 370.7,891.8 L 726.5,891.8 L 726.5,408.1 L 770.0,408.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-45" class="edge" data-source="oct" data-target="ikt" d="M 660.0,611.8 L 715.0,611.8 L 715.0,683.0 L 703.5,683.0 L 703.5,397.9 L 770.0,397.9" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="45" data-source="oct" data-target="ikt" data-src-label="Основи цифрових технологій" data-tgt-label="Інформатика та комп'ютерна техніка" d="M 660.0,611.8 L 715.0,611.8 L 715.0,683.0 L 703.5,683.0 L 703.5,397.9 L 770.0,397.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-46" class="edge" data-source="vyshcha_mat" data-target="ikt" d="M 660.0,509.9 L 706.0,509.9 L 706.0,571.0 L 680.6,571.0 L 680.6,387.8 L 770.0,387.8" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="46" data-source="vyshcha_mat" data-target="ikt" data-src-label="Вища математика" data-tgt-label="Інформатика та комп'ютерна техніка" d="M 660.0,509.9 L 706.0,509.9 L 706.0,571.0 L 680.6,571.0 L 680.6,387.8 L 770.0,387.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-47" class="edge" data-source="ikt" data-target="ped_prakt4" d="M 1030.0,408.1 L 1073.0,408.1 L 1073.0,443.8 L 1060.4,443.8 L 1060.4,1176.1 L 1140.0,1176.1" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="47" data-source="ikt" data-target="ped_prakt4" data-src-label="Інформатика та комп'ютерна техніка" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,408.1 L 1073.0,408.1 L 1073.0,443.8 L 1060.4,443.8 L 1060.4,1176.1 L 1140.0,1176.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-48" class="edge" data-source="os" data-target="oct" d="M 290.0,841.9 L 370.7,841.9 L 370.7,891.8 L 379.4,891.8 L 379.4,642.2 L 400.0,642.2" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="48" data-source="os" data-target="oct" data-src-label="Операційні системи" data-tgt-label="Основи цифрових технологій" d="M 290.0,841.9 L 370.7,841.9 L 370.7,891.8 L 379.4,891.8 L 379.4,642.2 L 400.0,642.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-49" class="edge" data-source="os" data-target="ikg" d="M 290.0,848.0 L 370.7,848.0 L 370.7,891.8 L 345.0,891.8 L 345.0,739.0 L 400.0,739.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="49" data-source="os" data-target="ikg" data-src-label="Операційні системи" data-tgt-label="Інженерна та комп'ютерна графіка" d="M 290.0,848.0 L 370.7,848.0 L 370.7,891.8 L 345.0,891.8 L 345.0,739.0 L 400.0,739.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-50" class="edge" data-source="os" data-target="vyr_prakt" d="M 290.0,860.1 L 370.7,860.1 L 370.7,891.8 L 379.4,891.8 L 379.4,978.2 L 400.0,978.2" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="50" data-source="os" data-target="vyr_prakt" data-src-label="Операційні системи" data-tgt-label="Виробнича практика" d="M 290.0,860.1 L 370.7,860.1 L 370.7,891.8 L 379.4,891.8 L 379.4,978.2 L 400.0,978.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-51" class="edge" data-source="vyshcha_mat" data-target="vyb_b" d="M 660.0,530.2 L 706.0,530.2 L 706.0,571.0 L 715.0,571.0 L 715.0,627.0 L 770.0,627.0" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="51" data-source="vyshcha_mat" data-target="vyb_b" data-src-label="Вища математика" data-tgt-label="Вибіркова дисципліна" d="M 660.0,530.2 L 706.0,530.2 L 706.0,571.0 L 715.0,571.0 L 715.0,627.0 L 770.0,627.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-52" class="edge" data-source="fizyka" data-target="ikg" d="M 290.0,978.2 L 381.0,978.2 L 381.0,1003.8 L 379.4,1003.8 L 379.4,754.2 L 400.0,754.2" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="52" data-source="fizyka" data-target="ikg" data-src-label="Фізика. Електротехніка" data-tgt-label="Інженерна та комп'ютерна графіка" d="M 290.0,978.2 L 381.0,978.2 L 381.0,1003.8 L 379.4,1003.8 L 379.4,754.2 L 400.0,754.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-53" class="edge" data-source="fizyka" data-target="tzn" d="M 290.0,963.0 L 381.0,963.0 L 381.0,1003.8 L 749.4,1003.8 L 749.4,530.2 L 770.0,530.2" fill="none" stroke="#3f7ca3" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-math)"/>
+<path class="edge-hit" data-edge="53" data-source="fizyka" data-target="tzn" data-src-label="Фізика. Електротехніка" data-tgt-label="Технічні засоби навчання та методика їх використання" d="M 290.0,963.0 L 381.0,963.0 L 381.0,1003.8 L 749.4,1003.8 L 749.4,530.2 L 770.0,530.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-54" class="edge" data-source="oct" data-target="tzn" d="M 660.0,619.4 L 715.0,619.4 L 715.0,683.0 L 680.6,683.0 L 680.6,499.8 L 770.0,499.8" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="54" data-source="oct" data-target="tzn" data-src-label="Основи цифрових технологій" data-tgt-label="Технічні засоби навчання та методика їх використання" d="M 660.0,619.4 L 715.0,619.4 L 715.0,683.0 L 680.6,683.0 L 680.6,499.8 L 770.0,499.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-55" class="edge" data-source="oct" data-target="teh_prakt" d="M 660.0,634.6 L 715.0,634.6 L 715.0,683.0 L 697.8,683.0 L 697.8,843.4 L 770.0,843.4" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="55" data-source="oct" data-target="teh_prakt" data-src-label="Основи цифрових технологій" data-tgt-label="Технологічна практика" d="M 660.0,634.6 L 715.0,634.6 L 715.0,683.0 L 697.8,683.0 L 697.8,843.4 L 770.0,843.4" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-56" class="edge" data-source="oct" data-target="vyb_c" d="M 660.0,627.0 L 715.0,627.0 L 715.0,683.0 L 715.0,683.0 L 715.0,739.0 L 770.0,739.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="56" data-source="oct" data-target="vyb_c" data-src-label="Основи цифрових технологій" data-tgt-label="Вибіркова дисципліна" d="M 660.0,627.0 L 715.0,627.0 L 715.0,683.0 L 715.0,683.0 L 715.0,739.0 L 770.0,739.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-57" class="edge" data-source="oct" data-target="ped_prakt2" d="M 660.0,642.2 L 715.0,642.2 L 715.0,683.0 L 619.6,683.0 L 619.6,1158.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="57" data-source="oct" data-target="ped_prakt2" data-src-label="Основи цифрових технологій" data-tgt-label="Педагогічна практика (2 семестр)" d="M 660.0,642.2 L 715.0,642.2 L 715.0,683.0 L 619.6,683.0 L 619.6,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-58" class="edge" data-source="ikg" data-target="tzn" d="M 660.0,723.8 L 724.0,723.8 L 724.0,795.0 L 715.0,795.0 L 715.0,515.0 L 770.0,515.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="58" data-source="ikg" data-target="tzn" data-src-label="Інженерна та комп'ютерна графіка" data-tgt-label="Технічні засоби навчання та методика їх використання" d="M 660.0,723.8 L 724.0,723.8 L 724.0,795.0 L 715.0,795.0 L 715.0,515.0 L 770.0,515.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-59" class="edge" data-source="ikg" data-target="teh_prakt" d="M 660.0,754.2 L 724.0,754.2 L 724.0,795.0 L 715.0,795.0 L 715.0,851.0 L 770.0,851.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="59" data-source="ikg" data-target="teh_prakt" data-src-label="Інженерна та комп'ютерна графіка" data-tgt-label="Технологічна практика" d="M 660.0,754.2 L 724.0,754.2 L 724.0,795.0 L 715.0,795.0 L 715.0,851.0 L 770.0,851.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-60" class="edge" data-source="tzn" data-target="ped_prakt4" d="M 1030.0,530.2 L 1085.0,530.2 L 1085.0,586.2 L 1070.3,586.2 L 1070.3,1180.5 L 1140.0,1180.5" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="60" data-source="tzn" data-target="ped_prakt4" data-src-label="Технічні засоби навчання та методика їх використання" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,530.2 L 1085.0,530.2 L 1085.0,586.2 L 1070.3,586.2 L 1070.3,1180.5 L 1140.0,1180.5" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-61" class="edge" data-source="vyr_prakt" data-target="teh_prakt" d="M 660.0,947.8 L 742.0,947.8 L 742.0,1019.0 L 749.4,1019.0 L 749.4,866.2 L 770.0,866.2" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="61" data-source="vyr_prakt" data-target="teh_prakt" data-src-label="Виробнича практика" data-tgt-label="Технологічна практика" d="M 660.0,947.8 L 742.0,947.8 L 742.0,1019.0 L 749.4,1019.0 L 749.4,866.2 L 770.0,866.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-62" class="edge" data-source="teh_prakt" data-target="ped_prakt4" d="M 1030.0,835.8 L 1121.0,835.8 L 1121.0,922.2 L 1099.7,922.2 L 1099.7,1193.5 L 1140.0,1193.5" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="62" data-source="teh_prakt" data-target="ped_prakt4" data-src-label="Технологічна практика" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,835.8 L 1121.0,835.8 L 1121.0,922.2 L 1099.7,922.2 L 1099.7,1193.5 L 1140.0,1193.5" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-63" class="edge" data-source="ped_prakt2" data-target="ped_prakt4" d="M 660.0,1187.0 L 751.0,1187.0 L 751.0,1227.8 L 1119.4,1227.8 L 1119.4,1202.2 L 1140.0,1202.2" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="63" data-source="ped_prakt2" data-target="ped_prakt4" data-src-label="Педагогічна практика (2 семестр)" data-tgt-label="Педагогічна практика (4 семестр)" d="M 660.0,1187.0 L 751.0,1187.0 L 751.0,1227.8 L 1119.4,1227.8 L 1119.4,1202.2 L 1140.0,1202.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-64" class="edge" data-source="os" data-target="vyb_a" d="M 290.0,854.0 L 370.7,854.0 L 370.7,891.8 L 345.0,891.8 L 345.0,851.0 L 400.0,851.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="64" data-source="os" data-target="vyb_a" data-src-label="Операційні системи" data-tgt-label="Вибіркова дисципліна" d="M 290.0,854.0 L 370.7,854.0 L 370.7,891.8 L 345.0,891.8 L 345.0,851.0 L 400.0,851.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-65" class="edge" data-source="vyb_a" data-target="ikt" d="M 660.0,835.8 L 733.0,835.8 L 733.0,907.0 L 749.4,907.0 L 749.4,418.2 L 770.0,418.2" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="65" data-source="vyb_a" data-target="ikt" data-src-label="Вибіркова дисципліна" data-tgt-label="Інформатика та комп'ютерна техніка" d="M 660.0,835.8 L 733.0,835.8 L 733.0,907.0 L 749.4,907.0 L 749.4,418.2 L 770.0,418.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-66" class="edge" data-source="vyb_a" data-target="teh_prakt" d="M 660.0,851.0 L 733.0,851.0 L 733.0,907.0 L 732.2,907.0 L 732.2,858.6 L 770.0,858.6" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="66" data-source="vyb_a" data-target="teh_prakt" data-src-label="Вибіркова дисципліна" data-tgt-label="Технологічна практика" d="M 660.0,851.0 L 733.0,851.0 L 733.0,907.0 L 732.2,907.0 L 732.2,858.6 L 770.0,858.6" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-67" class="edge" data-source="vyb_a" data-target="ped_prakt4" d="M 660.0,866.2 L 733.0,866.2 L 733.0,907.0 L 1109.6,907.0 L 1109.6,1197.9 L 1140.0,1197.9" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="67" data-source="vyb_a" data-target="ped_prakt4" data-src-label="Вибіркова дисципліна" data-tgt-label="Педагогічна практика (4 семестр)" d="M 660.0,866.2 L 733.0,866.2 L 733.0,907.0 L 1109.6,907.0 L 1109.6,1197.9 L 1140.0,1197.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-68" class="edge" data-source="vyb_b" data-target="ped_prakt4" d="M 1030.0,627.0 L 1097.0,627.0 L 1097.0,667.8 L 1080.1,667.8 L 1080.1,1184.8 L 1140.0,1184.8" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="68" data-source="vyb_b" data-target="ped_prakt4" data-src-label="Вибіркова дисципліна" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,627.0 L 1097.0,627.0 L 1097.0,667.8 L 1080.1,667.8 L 1080.1,1184.8 L 1140.0,1184.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-69" class="edge" data-source="vyb_c" data-target="ped_prakt4" d="M 1030.0,739.0 L 1109.0,739.0 L 1109.0,795.0 L 1089.9,795.0 L 1089.9,1189.2 L 1140.0,1189.2" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="69" data-source="vyb_c" data-target="ped_prakt4" data-src-label="Вибіркова дисципліна" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1030.0,739.0 L 1109.0,739.0 L 1109.0,795.0 L 1089.9,795.0 L 1089.9,1189.2 L 1140.0,1189.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-70" class="edge" data-source="vyb_d" data-target="ped_prakt4" d="M 1400.0,739.0 L 1433.2,739.0 L 1433.2,779.8 L 1359.6,779.8 L 1359.6,1158.0" fill="none" stroke="#5aa87e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-elect)"/>
+<path class="edge-hit" data-edge="70" data-source="vyb_d" data-target="ped_prakt4" data-src-label="Вибіркова дисципліна" data-tgt-label="Педагогічна практика (4 семестр)" d="M 1400.0,739.0 L 1433.2,739.0 L 1433.2,779.8 L 1359.6,779.8 L 1359.6,1158.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-71" class="edge" data-source="os" data-target="kval" d="M 290.0,866.2 L 370.7,866.2 L 370.7,891.8 L 1096.5,891.8 L 1096.5,1304.1 L 1140.0,1304.1" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="71" data-source="os" data-target="kval" data-src-label="Операційні системи" data-tgt-label="Кваліфікаційний іспит" d="M 290.0,866.2 L 370.7,866.2 L 370.7,891.8 L 1096.5,891.8 L 1096.5,1304.1 L 1140.0,1304.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-72" class="edge" data-source="ikt" data-target="kval" d="M 1030.0,418.2 L 1073.0,418.2 L 1073.0,443.8 L 1062.1,443.8 L 1062.1,1288.9 L 1140.0,1288.9" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="72" data-source="ikt" data-target="kval" data-src-label="Інформатика та комп'ютерна техніка" data-tgt-label="Кваліфікаційний іспит" d="M 1030.0,418.2 L 1073.0,418.2 L 1073.0,443.8 L 1062.1,443.8 L 1062.1,1288.9 L 1140.0,1288.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-73" class="edge" data-source="ksm" data-target="kval" d="M 1400.0,515.0 L 1426.8,515.0 L 1426.8,555.8 L 1270.0,555.8 L 1270.0,1270.0" fill="none" stroke="#c9761f" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-it)"/>
+<path class="edge-hit" data-edge="73" data-source="ksm" data-target="kval" data-src-label="Комп'ютерні системи та мережі" data-tgt-label="Кваліфікаційний іспит" d="M 1400.0,515.0 L 1426.8,515.0 L 1426.8,555.8 L 1270.0,555.8 L 1270.0,1270.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-74" class="edge" data-source="psyhologia" data-target="kval" d="M 290.0,754.2 L 360.4,754.2 L 360.4,779.8 L 1085.0,779.8 L 1085.0,1299.0 L 1140.0,1299.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="74" data-source="psyhologia" data-target="kval" data-src-label="Психологія" data-tgt-label="Кваліфікаційний іспит" d="M 290.0,754.2 L 360.4,754.2 L 360.4,779.8 L 1085.0,779.8 L 1085.0,1299.0 L 1140.0,1299.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-75" class="edge" data-source="pedagogika" data-target="kval" d="M 660.0,418.2 L 697.0,418.2 L 697.0,459.0 L 1073.5,459.0 L 1073.5,1293.9 L 1140.0,1293.9" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="75" data-source="pedagogika" data-target="kval" data-src-label="Педагогіка" data-tgt-label="Кваліфікаційний іспит" d="M 660.0,418.2 L 697.0,418.2 L 697.0,459.0 L 1073.5,459.0 L 1073.5,1293.9 L 1140.0,1293.9" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-76" class="edge" data-source="omvr" data-target="kval" d="M 1030.0,306.2 L 1061.0,306.2 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,1283.8 L 1140.0,1283.8" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="76" data-source="omvr" data-target="kval" data-src-label="Організація та методика виховної роботи" data-tgt-label="Кваліфікаційний іспит" d="M 1030.0,306.2 L 1061.0,306.2 L 1061.0,347.0 L 1050.6,347.0 L 1050.6,1283.8 L 1140.0,1283.8" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-77" class="edge" data-source="ompn" data-target="kval" d="M 1400.0,1090.2 L 1439.6,1090.2 L 1439.6,1115.8 L 1180.4,1115.8 L 1180.4,1270.0" fill="none" stroke="#4d7fb0" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-pp)"/>
+<path class="edge-hit" data-edge="77" data-source="ompn" data-target="kval" data-src-label="Організація та методика професійного навчання" data-tgt-label="Кваліфікаційний іспит" d="M 1400.0,1090.2 L 1439.6,1090.2 L 1439.6,1115.8 L 1180.4,1115.8 L 1180.4,1270.0" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-78" class="edge" data-source="vyr_prakt" data-target="kval" d="M 660.0,978.2 L 742.0,978.2 L 742.0,1019.0 L 1119.4,1019.0 L 1119.4,1314.2 L 1140.0,1314.2" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="78" data-source="vyr_prakt" data-target="kval" data-src-label="Виробнича практика" data-tgt-label="Кваліфікаційний іспит" d="M 660.0,978.2 L 742.0,978.2 L 742.0,1019.0 L 1119.4,1019.0 L 1119.4,1314.2 L 1140.0,1314.2" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-79" class="edge" data-source="teh_prakt" data-target="kval" d="M 1030.0,866.2 L 1121.0,866.2 L 1121.0,922.2 L 1107.9,922.2 L 1107.9,1309.1 L 1140.0,1309.1" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="79" data-source="teh_prakt" data-target="kval" data-src-label="Технологічна практика" data-tgt-label="Кваліфікаційний іспит" d="M 1030.0,866.2 L 1121.0,866.2 L 1121.0,922.2 L 1107.9,922.2 L 1107.9,1309.1 L 1140.0,1309.1" fill="none" stroke="transparent" stroke-width="11"/>
+<path id="edge-80" class="edge" data-source="ped_prakt4" data-target="kval" d="M 1400.0,1187.0 L 1446.0,1187.0 L 1446.0,1227.8 L 1359.6,1227.8 L 1359.6,1270.0" fill="none" stroke="#3d8a5e" stroke-width="1.9" opacity="0.9" stroke-linejoin="miter" marker-end="url(#arrow-prac)"/>
+<path class="edge-hit" data-edge="80" data-source="ped_prakt4" data-target="kval" data-src-label="Педагогічна практика (4 семестр)" data-tgt-label="Кваліфікаційний іспит" d="M 1400.0,1187.0 L 1446.0,1187.0 L 1446.0,1227.8 L 1359.6,1227.8 L 1359.6,1270.0" fill="none" stroke="transparent" stroke-width="11"/>
+<circle class="junction" data-owner="ist_kult" cx="310.6" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ist_kult" cx="310.6" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ist_kult" cx="680.6" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="sociologia" cx="379.4" cy="667.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="sociologia" cx="749.4" cy="667.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="sociologia" cx="345.0" cy="667.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ist_ukr" cx="703.5" cy="235.0" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ist_ukr" cx="1050.6" cy="235.0" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="726.5" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="filosofia" cx="1073.5" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="filosofia" cx="1085.0" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="1119.4" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="omvr" cx="1096.5" cy="347.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="ukr_mova" cx="1240.1" cy="219.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="inoz_mova" cx="310.6" cy="331.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="inoz_mova" cx="310.6" cy="331.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="inoz_mova" cx="310.6" cy="331.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="inoz_mova" cx="310.6" cy="331.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="fizyka" cx="1119.4" cy="1003.8" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="omvr" cx="1050.6" cy="347.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="bzhd" cx="1299.9" cy="331.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="pravoznavstvo" cx="345.0" cy="443.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="pravoznavstvo" cx="680.6" cy="443.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="pravoznavstvo" cx="310.6" cy="443.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ekon_teor" cx="379.4" cy="555.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ekon_teor" cx="345.0" cy="555.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ekon_teor" cx="1085.0" cy="555.8" r="2.8" fill="#c96b6b" opacity="0.9"/>
+<circle class="junction" data-owner="ekologia" cx="680.6" cy="331.8" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="ekologia" cx="1050.6" cy="331.8" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="psyhologia" cx="379.4" cy="779.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="psyhologia" cx="749.4" cy="779.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="psyhologia" cx="749.4" cy="779.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="psyhologia" cx="379.4" cy="779.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="715.0" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="680.6" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="440.4" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="omvr" cx="1085.0" cy="347.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="omvr" cx="1050.6" cy="347.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="ompn" cx="1180.4" cy="1115.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="vyshcha_mat" cx="1119.4" cy="571.0" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="ikt" cx="1050.6" cy="443.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="tzn" cx="1119.4" cy="586.2" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="vyshcha_mat" cx="1119.4" cy="571.0" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="ikt" cx="1050.6" cy="443.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="726.5" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="oct" cx="703.5" cy="683.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="vyshcha_mat" cx="680.6" cy="571.0" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="ikt" cx="1060.4" cy="443.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="379.4" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="345.0" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="379.4" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="vyshcha_mat" cx="715.0" cy="571.0" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="fizyka" cx="379.4" cy="1003.8" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="fizyka" cx="749.4" cy="1003.8" r="2.8" fill="#3f7ca3" opacity="0.9"/>
+<circle class="junction" data-owner="oct" cx="680.6" cy="683.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="oct" cx="697.8" cy="683.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="oct" cx="715.0" cy="683.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="oct" cx="619.6" cy="683.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="ikg" cx="715.0" cy="795.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="ikg" cx="715.0" cy="795.0" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="tzn" cx="1070.3" cy="586.2" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="vyr_prakt" cx="749.4" cy="1019.0" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+<circle class="junction" data-owner="teh_prakt" cx="1099.7" cy="922.2" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+<circle class="junction" data-owner="ped_prakt2" cx="1119.4" cy="1227.8" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="345.0" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_a" cx="749.4" cy="907.0" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_a" cx="732.2" cy="907.0" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_a" cx="1109.6" cy="907.0" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_b" cx="1080.1" cy="667.8" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_c" cx="1089.9" cy="795.0" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="vyb_d" cx="1359.6" cy="779.8" r="2.8" fill="#5aa87e" opacity="0.9"/>
+<circle class="junction" data-owner="os" cx="1096.5" cy="891.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="ikt" cx="1062.1" cy="443.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="ksm" cx="1270.0" cy="555.8" r="2.8" fill="#c9761f" opacity="0.9"/>
+<circle class="junction" data-owner="psyhologia" cx="1085.0" cy="779.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="pedagogika" cx="1073.5" cy="459.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="omvr" cx="1050.6" cy="347.0" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="ompn" cx="1180.4" cy="1115.8" r="2.8" fill="#4d7fb0" opacity="0.9"/>
+<circle class="junction" data-owner="vyr_prakt" cx="1119.4" cy="1019.0" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+<circle class="junction" data-owner="teh_prakt" cx="1107.9" cy="922.2" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+<circle class="junction" data-owner="ped_prakt4" cx="1359.6" cy="1227.8" r="2.8" fill="#3d8a5e" opacity="0.9"/>
+</g>
+<g id="nodes-layer">
+<g class="node" data-id="ist_kult" tabindex="0">
+<rect class="node-rect" x="30" y="150" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="160.0" y="182.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Історія української культури</text>
+</g>
+<g class="node" data-id="inoz_mova" tabindex="0">
+<rect class="node-rect" x="30" y="262" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="160.0" y="287.3" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Іноземна мова</text>
+<text x="160.0" y="302.6" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">(за професійним спрямуванням)</text>
+</g>
+<g class="node" data-id="pravoznavstvo" tabindex="0">
+<rect class="node-rect" x="30" y="374" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="160.0" y="406.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Основи правознавства</text>
+</g>
+<g class="node" data-id="ekon_teor" tabindex="0">
+<rect class="node-rect" x="30" y="486" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="160.0" y="518.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Економічна теорія</text>
+</g>
+<g class="node" data-id="sociologia" tabindex="0">
+<rect class="node-rect" x="30" y="598" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="160.0" y="630.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Соціологія</text>
+</g>
+<g class="node" data-id="psyhologia" tabindex="0">
+<rect class="node-rect" x="30" y="710" width="260" height="58" rx="9" fill="#b7d2ef" stroke="#6f9fce" stroke-width="1.7"/>
+<text x="160.0" y="742.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Психологія</text>
+</g>
+<g class="node" data-id="os" tabindex="0">
+<rect class="node-rect" x="30" y="822" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="160.0" y="854.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Операційні системи</text>
+</g>
+<g class="node" data-id="fizyka" tabindex="0">
+<rect class="node-rect" x="30" y="934" width="260" height="58" rx="9" fill="#a9cfe3" stroke="#5f93bf" stroke-width="1.7"/>
+<text x="160.0" y="966.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Фізика. Електротехніка</text>
+</g>
+<g class="node" data-id="ist_ukr" tabindex="0">
+<rect class="node-rect" x="400" y="150" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="530.0" y="182.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Історія України</text>
+</g>
+<g class="node" data-id="ekologia" tabindex="0">
+<rect class="node-rect" x="400" y="262" width="260" height="58" rx="9" fill="#a9cfe3" stroke="#5f93bf" stroke-width="1.7"/>
+<text x="530.0" y="294.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Екологія</text>
+</g>
+<g class="node" data-id="pedagogika" tabindex="0">
+<rect class="node-rect" x="400" y="374" width="260" height="58" rx="9" fill="#b7d2ef" stroke="#6f9fce" stroke-width="1.7"/>
+<text x="530.0" y="406.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Педагогіка</text>
+</g>
+<g class="node" data-id="vyshcha_mat" tabindex="0">
+<rect class="node-rect" x="400" y="486" width="260" height="58" rx="9" fill="#a9cfe3" stroke="#5f93bf" stroke-width="1.7"/>
+<text x="530.0" y="518.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Вища математика</text>
+</g>
+<g class="node" data-id="oct" tabindex="0">
+<rect class="node-rect" x="400" y="598" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="530.0" y="630.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Основи цифрових технологій</text>
+</g>
+<g class="node" data-id="ikg" tabindex="0">
+<rect class="node-rect" x="400" y="710" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="530.0" y="742.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Інженерна та комп'ютерна графіка</text>
+</g>
+<g class="node" data-id="vyb_a" tabindex="0">
+<rect class="node-rect" x="400" y="822" width="260" height="58" rx="9" fill="#d9f2e3" stroke="#7fc79b" stroke-width="1.7" stroke-dasharray="5,3"/>
+<text x="530.0" y="854.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Вибіркова дисципліна</text>
+</g>
+<g class="node" data-id="vyr_prakt" tabindex="0">
+<rect class="node-rect" x="400" y="934" width="260" height="58" rx="9" fill="#a9dcbd" stroke="#4ea471" stroke-width="1.7"/>
+<text x="530.0" y="966.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Виробнича практика</text>
+</g>
+<g class="node" data-id="ped_prakt2" tabindex="0">
+<rect class="node-rect" x="400" y="1158" width="260" height="58" rx="9" fill="#a9dcbd" stroke="#4ea471" stroke-width="1.7"/>
+<text x="530.0" y="1183.3" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Педагогічна практика</text>
+<text x="530.0" y="1198.6" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">(2 семестр)</text>
+</g>
+<g class="node" data-id="filosofia" tabindex="0">
+<rect class="node-rect" x="770" y="150" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="900.0" y="182.9" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Філософія</text>
+</g>
+<g class="node" data-id="omvr" tabindex="0">
+<rect class="node-rect" x="770" y="262" width="260" height="58" rx="9" fill="#b7d2ef" stroke="#6f9fce" stroke-width="1.7"/>
+<text x="900.0" y="287.3" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Організація та методика</text>
+<text x="900.0" y="302.6" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">виховної роботи</text>
+</g>
+<g class="node" data-id="ikt" tabindex="0">
+<rect class="node-rect" x="770" y="374" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="900.0" y="399.3" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Інформатика та</text>
+<text x="900.0" y="414.6" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">комп'ютерна техніка</text>
+</g>
+<g class="node" data-id="tzn" tabindex="0">
+<rect class="node-rect" x="770" y="486" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="900.0" y="511.3" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Технічні засоби навчання</text>
+<text x="900.0" y="526.6" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">та методика їх використання</text>
+</g>
+<g class="node" data-id="vyb_b" tabindex="0">
+<rect class="node-rect" x="770" y="598" width="260" height="58" rx="9" fill="#d9f2e3" stroke="#7fc79b" stroke-width="1.7" stroke-dasharray="5,3"/>
+<text x="900.0" y="630.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Вибіркова дисципліна</text>
+</g>
+<g class="node" data-id="vyb_c" tabindex="0">
+<rect class="node-rect" x="770" y="710" width="260" height="58" rx="9" fill="#d9f2e3" stroke="#7fc79b" stroke-width="1.7" stroke-dasharray="5,3"/>
+<text x="900.0" y="742.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Вибіркова дисципліна</text>
+</g>
+<g class="node" data-id="teh_prakt" tabindex="0">
+<rect class="node-rect" x="770" y="822" width="260" height="58" rx="9" fill="#a9dcbd" stroke="#4ea471" stroke-width="1.7"/>
+<text x="900.0" y="854.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Технологічна практика</text>
+</g>
+<g class="node" data-id="ompn" tabindex="0">
+<rect class="node-rect" x="770" y="1046" width="630" height="58" rx="9" fill="#b7d2ef" stroke="#6f9fce" stroke-width="1.7"/>
+<text x="1085.0" y="1078.9" text-anchor="middle" font-size="12.3" fill="#1f3a5a" font-weight="600" style="pointer-events:none">Організація та методика професійного навчання</text>
+</g>
+<g class="node" data-id="ukr_mova" tabindex="0">
+<rect class="node-rect" x="1140" y="150" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="1270.0" y="175.3" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Українська мова</text>
+<text x="1270.0" y="190.6" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">(за професійним спрямуванням)</text>
+</g>
+<g class="node" data-id="bzhd" tabindex="0">
+<rect class="node-rect" x="1140" y="262" width="260" height="58" rx="9" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.7"/>
+<text x="1270.0" y="287.3" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">Безпека життєдіяльності</text>
+<text x="1270.0" y="302.6" text-anchor="middle" font-size="12.3" fill="#7a2e2e" font-weight="600" style="pointer-events:none">(основи охорони праці)</text>
+</g>
+<g class="node" data-id="eov" tabindex="0">
+<rect class="node-rect" x="1140" y="374" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="1270.0" y="406.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Економіка і організація виробництва</text>
+</g>
+<g class="node" data-id="ksm" tabindex="0">
+<rect class="node-rect" x="1140" y="486" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="1270.0" y="518.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Комп'ютерні системи та мережі</text>
+</g>
+<g class="node" data-id="programuvannya" tabindex="0">
+<rect class="node-rect" x="1140" y="598" width="260" height="58" rx="9" fill="#f6c896" stroke="#d97f2b" stroke-width="1.7"/>
+<text x="1270.0" y="630.9" text-anchor="middle" font-size="12.3" fill="#6b3a0a" font-weight="600" style="pointer-events:none">Програмування</text>
+</g>
+<g class="node" data-id="vyb_d" tabindex="0">
+<rect class="node-rect" x="1140" y="710" width="260" height="58" rx="9" fill="#d9f2e3" stroke="#7fc79b" stroke-width="1.7" stroke-dasharray="5,3"/>
+<text x="1270.0" y="742.9" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Вибіркова дисципліна</text>
+</g>
+<g class="node" data-id="ped_prakt4" tabindex="0">
+<rect class="node-rect" x="1140" y="1158" width="260" height="58" rx="9" fill="#a9dcbd" stroke="#4ea471" stroke-width="1.7"/>
+<text x="1270.0" y="1183.3" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">Педагогічна практика</text>
+<text x="1270.0" y="1198.6" text-anchor="middle" font-size="12.3" fill="#1c4a2f" font-weight="600" style="pointer-events:none">(4 семестр)</text>
+</g>
+<g class="node" data-id="kval" tabindex="0">
+<rect class="node-rect" x="1140" y="1270" width="260" height="58" rx="9" fill="#f4784a" stroke="#c14a24" stroke-width="1.7"/>
+<text x="1270.0" y="1302.9" text-anchor="middle" font-size="12.3" fill="#ffffff" font-weight="600" style="pointer-events:none">Кваліфікаційний іспит</text>
+</g>
+</g>
+<text x="745.0" y="1363" text-anchor="middle" font-size="12.5" fill="#555555">Наведіть на дисципліну — підсвітяться її пререквізити (сині) та постреквізити (помаранчеві). Наведіть на стрілку — побачите підказку «звідки → куди». Клацання фіксує виділення.</text>
+<rect x="30" y="1403" width="18" height="13" rx="3" fill="#fbd3d3" stroke="#e08a8a" stroke-width="1.2"/>
+<text x="54" y="1413.5" font-size="11.5" fill="#333333">Загальноосвітні / гуманітарні</text>
+<rect x="260.7" y="1403" width="18" height="13" rx="3" fill="#b7d2ef" stroke="#6f9fce" stroke-width="1.2"/>
+<text x="284.7" y="1413.5" font-size="11.5" fill="#333333">Психолого-педагогічні</text>
+<rect x="441.0" y="1403" width="18" height="13" rx="3" fill="#a9cfe3" stroke="#5f93bf" stroke-width="1.2"/>
+<text x="465.0" y="1413.5" font-size="11.5" fill="#333333">Природничо-математичні</text>
+<rect x="627.6" y="1403" width="18" height="13" rx="3" fill="#f6c896" stroke="#d97f2b" stroke-width="1.2"/>
+<text x="651.6" y="1413.5" font-size="11.5" fill="#333333">Фахові інформатичні</text>
+<rect x="795.3" y="1403" width="18" height="13" rx="3" fill="#a9dcbd" stroke="#4ea471" stroke-width="1.2"/>
+<text x="819.3" y="1413.5" font-size="11.5" fill="#333333">Практики</text>
+<rect x="893.6999999999999" y="1403" width="18" height="13" rx="3" fill="#d9f2e3" stroke="#7fc79b" stroke-width="1.2" stroke-dasharray="4,2"/>
+<text x="917.6999999999999" y="1413.5" font-size="11.5" fill="#333333">Вибіркові дисципліни</text>
+<rect x="1067.6999999999998" y="1403" width="18" height="13" rx="3" fill="#f4784a" stroke="#c14a24" stroke-width="1.2"/>
+<text x="1091.6999999999998" y="1413.5" font-size="11.5" fill="#333333">Атестація</text>
+</svg>
+  <button id="reset-btn">Скинути виділення</button>
+</div>
+<div id="tooltip"></div>
+<script>
+  const svg = document.getElementById('scheme-svg');
+  const nodes = Array.from(document.querySelectorAll('.node'));
+  const edges = Array.from(document.querySelectorAll('.edge'));
+  const hits  = Array.from(document.querySelectorAll('.edge-hit'));
+  const trunks = Array.from(document.querySelectorAll('.trunk'));
+  const juncts = Array.from(document.querySelectorAll('.junction'));
+  const tip   = document.getElementById('tooltip');
+  let activeId = null;   // locked by click
+  let hoverId  = null;   // temporary hover
+
+  function clearClasses() {
+    nodes.forEach(n => n.classList.remove('dim','active','source-active','target-active'));
+    edges.forEach(e => e.classList.remove('dim','in-active','out-active','trace'));
+    trunks.forEach(t => t.classList.remove('dim','hot'));
+    juncts.forEach(j => j.classList.remove('dim'));
+  }
+
+  function applyHighlight(id) {
+    clearClasses();
+    const inc = new Set(), out = new Set();
+    edges.forEach(e => {
+      const s = e.dataset.source, t = e.dataset.target;
+      if (t === id) { e.classList.add('in-active'); inc.add(s); }
+      else if (s === id) { e.classList.add('out-active'); out.add(t); }
+      else { e.classList.add('dim'); }
+    });
+    nodes.forEach(n => {
+      const nid = n.dataset.id;
+      if (nid === id) n.classList.add('active');
+      else if (inc.has(nid)) n.classList.add('source-active');
+      else if (out.has(nid)) n.classList.add('target-active');
+      else n.classList.add('dim');
+    });
+    trunks.forEach(t => {
+      const o = t.dataset.owner;
+      if (o === id) t.classList.add('hot');
+      else if (inc.has(o)) t.classList.add('hot');
+      else t.classList.add('dim');
+    });
+    juncts.forEach(j => {
+      const o = j.dataset.owner;
+      if (o !== id && !inc.has(o)) j.classList.add('dim');
+    });
+  }
+
+  function render() {
+    const id = hoverId || activeId;
+    if (id) applyHighlight(id); else clearClasses();
+  }
+
+  // ---- node interactions ----
+  nodes.forEach(n => {
+    const id = n.dataset.id;
+    n.addEventListener('mouseenter', () => { hoverId = id; render(); });
+    n.addEventListener('mouseleave', () => { hoverId = null; render(); });
+    n.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      activeId = (activeId === id) ? null : id;
+      hoverId = null;
+      render();
+    });
+    n.addEventListener('keypress', (ev) => {
+      if (ev.key === 'Enter') n.dispatchEvent(new Event('click', {bubbles:true}));
+    });
+  });
+
+  // ---- single-edge tracing ----
+  hits.forEach(h => {
+    h.addEventListener('mouseenter', (ev) => {
+      const i = h.dataset.edge;
+      clearClasses();
+      edges.forEach(e => e.classList.add('dim'));
+      trunks.forEach(t => t.classList.add(t.dataset.owner === h.dataset.source ? 'hot' : 'dim'));
+      juncts.forEach(j => { if (j.dataset.owner !== h.dataset.source) j.classList.add('dim'); });
+      const target = document.getElementById('edge-' + i);
+      if (target) { target.classList.remove('dim'); target.classList.add('trace'); }
+      nodes.forEach(n => {
+        const nid = n.dataset.id;
+        if (nid === h.dataset.source) { n.classList.add('source-active'); }
+        else if (nid === h.dataset.target) { n.classList.add('target-active'); }
+        else { n.classList.add('dim'); }
+      });
+      tip.innerHTML = h.dataset.srcLabel + ' <span class="arrow-glyph">&#8594;</span> ' + h.dataset.tgtLabel;
+      tip.style.display = 'block';
+    });
+    h.addEventListener('mousemove', (ev) => {
+      const pad = 16;
+      let x = ev.clientX + pad, y = ev.clientY + pad;
+      const r = tip.getBoundingClientRect();
+      if (x + r.width > window.innerWidth - 8) x = ev.clientX - r.width - pad;
+      if (y + r.height > window.innerHeight - 8) y = ev.clientY - r.height - pad;
+      tip.style.left = x + 'px';
+      tip.style.top = y + 'px';
+    });
+    h.addEventListener('mouseleave', () => {
+      tip.style.display = 'none';
+      render();
+    });
+  });
+
+  svg.addEventListener('click', () => { activeId = null; hoverId = null; render(); });
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    activeId = null; hoverId = null; tip.style.display = 'none'; render();
+  });
+</script>
+</body>
+</html>
